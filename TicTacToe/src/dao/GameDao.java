@@ -1,4 +1,4 @@
-package dao.impl;
+package dao;
 
 import model.Board;
 import model.Player;
@@ -9,5 +9,5 @@ public interface GameDao {
 
     void addPlayer(Player player);
 
-    void getPlayer(String name);
+    Player getPlayer(String name);
 }

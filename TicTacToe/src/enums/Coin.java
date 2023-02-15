@@ -1,2 +1,6 @@
-package enums;public enum Coin {
+package enums;
+
+public enum Coin {
+    O,
+    X
 }
