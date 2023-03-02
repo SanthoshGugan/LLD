@@ -1,0 +1,192 @@
+@startuml
+title Online Book Reading System
+
+abstract class Book {
+    # title: String
+    # pages: int
+    # author: String
+    # pages: List<Page>
+
+}
+
+class Page {
+    - content: String
+    - pageNo: int
+}
+
+class Ebook {
+    - digitalizedBy: User
+}
+
+interface Person {
+}
+
+abstract class User{
+    # name: String
+}
+
+class Admin {
+
+}
+
+class Librarian{
+
+}
+
+class Reader{
+    - membership: Membership
+}
+
+class Membership {
+    - type: MembershipType
+    - expiryDate: Date
+}
+
+enum MembershipType {
+    STANDARD
+    PREMIUM
+}
+
+class BookReader {
+    - currentBook: Book
+    - currentPage: int
+}
+
+'Book Relationship
+BookReader "1" o-- "*" EBook: has
+Book <|-- EBook: type of
+Book "1" *-- "*" Page: contains
+
+'User Relationship
+Person <|-- User: type of
+User <|-- Reader: type of
+User <|-- Admin: type of
+User <|-- Librarian: type of
+Reader "1" o-- "1" Membership: has
+
+
+/'
+Library Service
+'/
+package onlinebookreadingsystem.library {
+    class Library{
+        # books: List<Book>
+        # librarians: List<Librarian>
+        # searchBook: SearchBookStrategy
+
+        addBook(librarian, book)
+        remove(librarian, bookName)
+        searchBook(name):
+    }
+
+    interface SearchBookStrategy<T> {
+        search(<T>): List<Book>
+    }
+
+    class SearchBookByNameStrategy<String> {
+        - books: List<Book>
+        search(String name): List<Book>
+    }
+
+    interface BookListIterator {
+        has();
+        getNext();
+    }
+
+    class BookListIteratorImpl {
+        - bookList: List<Book>
+
+        + has(): boolean
+        + getNext(): Book
+    }
+
+
+    Library *-- Book: contains
+    Library o-- Librarian: has
+    Library o-- SearchBookStrategy: has
+    'Search
+    SearchBookStrategy <|-- SearchBookByNameStrategy: type of
+    'Iterator
+    BookListIterator <|-- BookListIteratorImpl: type of
+    Library "1" *-- "*" BookListIterator: contains
+
+}
+
+'User Service
+package onlinebookreadingsystem.user {
+    class UserManagement {
+        - readers: List<Reader>
+        - librarians: List<Librarian>
+        - admin: Admin
+        - activeUser: Reader
+        - activeLibrarian: Librarian
+
+        + addReader(reader: Reader)
+        + removeReader(readerName: String)
+        + readerLogin(name: String): boolean
+        + readerLogout()
+        + librarianLogin(name: String): boolean
+        + librarianLogout()
+        + getActiveReader(): Reader
+        + getActiveLibrarian: Librarian
+    }
+
+    UserManagement "1" *-- "*" Reader: contains
+    UserManagement "1" *-- "*" Librarian: contains
+    UserManagement "1" *-- "1" Admin: contains
+
+
+}
+
+package onlinebookreadingsystem.bookDisplay {
+    class BookDisplay {
+       - book: Book
+       - page: Page
+       - renderPage: RenderPage
+       + displayFrontCover()
+       + displayPage()
+       + displayEndCover()
+       + setBook(book: Book)
+       + nextPage()
+       + prevPage()
+       + setPage()
+    }
+
+    class RenderPage {
+        - page: Page
+        - renderStrategy: RenderStrategy
+
+
+        + setPage(page: Page)
+        + render()
+    }
+
+    interface RenderStrategy<T> {
+        render(page: Page): <T>
+    }
+
+    class RenderAsTextStrategy<String> {
+        + render(page: Page): String
+    }
+
+    RenderStrategy <|-- RenderAsTextStrategy
+
+    BookDisplay "1" o-- "1" Book: has
+    BookDisplay "1" o-- "*" RenderPage: has
+    BookDisplay "1" o-- "*" RenderStrategy: has
+}
+
+class OnlineBookReadingSystem {
+    - userManagement: UserManagement
+    - library: Library
+    - bookDisplay: BookDisplay
+
+}
+
+OnlineBookReadingSystem "1" *-- "1" UserManagement: contains
+OnlineBookReadingSystem "1" *-- "1" Library: contains
+OnlineBookReadingSystem "1" *-- "1" BookDisplay: contains
+
+
+
+@enduml
