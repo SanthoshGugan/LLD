@@ -1,7 +1,11 @@
 @startuml
 title Online Book Reading System
 
-abstract class Book {
+interface Book {
+
+}
+
+abstract class BookImpl {
     # title: String
     # pages: int
     # author: List<Author>
@@ -53,6 +57,7 @@ enum MembershipType {
 
 
 'Book Relationship
+Book <|-- BookImpl: implements
 Book <|-- EBook: type of
 Book "1" *-- "*" Page: contains
 Book "*" o-- "*" Author: authored by
@@ -142,7 +147,7 @@ package onlinebookreadingsystem.user {
         + addReader(reader: Reader)
         + removeReader(readerName: String)
         + readerLogin(name: String): boolean
-        + readerLogout()
+        + readerLogout(): boolean
         + librarianLogin(name: String): boolean
         + librarianLogout()
         + getActiveReader(): Reader
@@ -181,7 +186,11 @@ package onlinebookreadingsystem.bookDisplay {
        + setPage()
     }
 
-    class RenderPage {
+    interface RenderPage {
+
+    }
+
+    class RenderPageImpl {
         - page: Page
         - renderStrategy: RenderStrategy
 
@@ -205,6 +214,8 @@ package onlinebookreadingsystem.bookDisplay {
     BookDisplay "1" o-- "1" Book: has
     BookDisplay "1" o-- "*" RenderPage: has
     RenderPage "1" o-- "*" RenderStrategy: has
+
+    RenderPage <|-- RenderPageImpl: implements
 }
 
 interface OnlineBookReadingSystem {
@@ -229,12 +240,12 @@ Reader to Membership should be many to 1 => done
 
 interface required for services => done
 
-User management should have users as Aggregation
-Readerlogout returns boolean(for success/failure)
+User management should have users as Aggregation => done
+Readerlogout returns boolean(for success/failure) => done
 
-Generic UserManagement
+Generic UserManagement => will try in another system
 
-Render page can be interface and can have DI
+Render page can be interface and can have DI => done
 Book should be abstracted -> interface and baseClass
 '/
 
