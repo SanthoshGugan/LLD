@@ -4,9 +4,8 @@ title Online Book Reading System
 abstract class Book {
     # title: String
     # pages: int
-    # author: String
+    # author: List<Author>
     # pages: List<Page>
-
 }
 
 class Page {
@@ -14,10 +13,15 @@ class Page {
     - pageNo: int
 }
 
-class Ebook {
+class Author {
+    - name: String
+}
+
+class EBook {
     - digitalizedBy: User
 }
 
+'Rename to Account
 interface Person {
 }
 
@@ -47,35 +51,38 @@ enum MembershipType {
     PREMIUM
 }
 
-class BookReader {
-    - currentBook: Book
-    - currentPage: int
-}
 
 'Book Relationship
-BookReader "1" o-- "*" EBook: has
 Book <|-- EBook: type of
 Book "1" *-- "*" Page: contains
+Book "*" o-- "*" Author: authored by
 
 'User Relationship
 Person <|-- User: type of
 User <|-- Reader: type of
 User <|-- Admin: type of
 User <|-- Librarian: type of
-Reader "1" o-- "1" Membership: has
+Reader "*" o-- "1" Membership: has
 
 
 /'
 Library Service
 '/
 package onlinebookreadingsystem.library {
-    class Library{
+    interface Library {
+        addBook(librarian: Librarian, book: Book): void
+        removeBook(librarian: Librarian, bookName: String): void
+        searchBook(name: String): Optional<Book>
+    }
+
+    class LibraryImpl {
         # books: List<Book>
         # librarians: List<Librarian>
         # searchBook: SearchBookStrategy
+        # bookListIterator: BookListIterator
 
         addBook(librarian, book)
-        remove(librarian, bookName)
+        removeBook(librarian, bookName)
         searchBook(name):
     }
 
@@ -100,7 +107,7 @@ package onlinebookreadingsystem.library {
         + getNext(): Book
     }
 
-
+    Library <|-- LibraryImpl: extends
     Library *-- Book: contains
     Library o-- Librarian: has
     Library o-- SearchBookStrategy: has
@@ -114,7 +121,18 @@ package onlinebookreadingsystem.library {
 
 'User Service
 package onlinebookreadingsystem.user {
-    class UserManagement {
+    interface UserManagement {
+        addReader(reader: Reader): void
+        removeReader(readerName: String): void
+        readerLogin(name: String): boolean
+        readerLogout(): boolean
+        librarianLogin(name: String): boolean
+        librarianLogout(): void
+        getActiveReader(): Reader
+        getActiveLibrarian: Librarian
+    }
+
+    class UserManagementImpl {
         - readers: List<Reader>
         - librarians: List<Librarian>
         - admin: Admin
@@ -131,18 +149,29 @@ package onlinebookreadingsystem.user {
         + getActiveLibrarian: Librarian
     }
 
-    UserManagement "1" *-- "*" Reader: contains
-    UserManagement "1" *-- "*" Librarian: contains
-    UserManagement "1" *-- "1" Admin: contains
-
-
+    UserManagement <|-- UserManagementImpl: implements
+    UserManagement "1" o-- "*" Reader: contains
+    UserManagement "1" o-- "*" Librarian: contains
+    UserManagement "1" o-- "1" Admin: contains
 }
 
 package onlinebookreadingsystem.bookDisplay {
-    class BookDisplay {
+    interface BookDisplay {
+        displayFrontCover()
+        displayPage()
+        displayEndCover()
+        setBook(book: Book)
+        nextPage()
+        prevPage()
+        setPage()
+
+    }
+
+    class BookDisplayImpl {
        - book: Book
        - page: Page
        - renderPage: RenderPage
+
        + displayFrontCover()
        + displayPage()
        + displayEndCover()
@@ -169,24 +198,44 @@ package onlinebookreadingsystem.bookDisplay {
         + render(page: Page): String
     }
 
+    BookDisplay <|-- BookDisplayImpl: implements
+
     RenderStrategy <|-- RenderAsTextStrategy
 
     BookDisplay "1" o-- "1" Book: has
     BookDisplay "1" o-- "*" RenderPage: has
-    BookDisplay "1" o-- "*" RenderStrategy: has
+    RenderPage "1" o-- "*" RenderStrategy: has
 }
 
-class OnlineBookReadingSystem {
+interface OnlineBookReadingSystem {
+}
+
+class OnlineBookReadingSystemImpl {
     - userManagement: UserManagement
     - library: Library
     - bookDisplay: BookDisplay
 
 }
 
+OnlineBookReadingSystem <|-- OnlineBookReadingSystemImpl: implements
 OnlineBookReadingSystem "1" *-- "1" UserManagement: contains
 OnlineBookReadingSystem "1" *-- "1" Library: contains
 OnlineBookReadingSystem "1" *-- "1" BookDisplay: contains
 
+'Reivew Comments
+/'
+List of Authors => done
+Reader to Membership should be many to 1 => done
 
+interface required for services => done
+
+User management should have users as Aggregation
+Readerlogout returns boolean(for success/failure)
+
+Generic UserManagement
+
+Render page can be interface and can have DI
+Book should be abstracted -> interface and baseClass
+'/
 
 @enduml

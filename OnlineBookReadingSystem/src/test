@@ -1,0 +1,19 @@
+class UserManagement<T extends User> {
+    private List<T> users;
+    T activeUser;
+
+    boolean login(T user) {
+
+    }
+
+    boolean logout() {
+
+    }
+}
+
+
+class OnlineBookReadingApp {
+    readerManagementService = new UserManagement<Reader>();
+    librarianManagementService = new UserManagement<Librarian>();
+    AdminManagementService = new UserManagement<Admin>();
+}

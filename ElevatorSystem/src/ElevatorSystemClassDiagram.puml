@@ -1,0 +1,104 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'Interfaces
+
+interface ElevatorBox {
+
+}
+
+interface ElevatorDoor {
+
+}
+
+interface Shaft {
+    timeTakenToMoveToNextFloor(): void
+}
+
+interface Button {
+    press(): void
+    isPressed(): void
+}
+
+interface NumericButton {
+    getNumericValue(): void
+}
+
+interface DirectionButton {
+    getDirection(): void
+}
+
+interface EmergencyButton {
+
+}
+
+Button <|-- NumericButton: extends
+Button <|-- DirectionButton: extends
+Button <|-- EmergencyButton: extends
+
+interface Person {
+    getName(): String
+}
+
+interface User {
+
+}
+
+interface Admin {
+}
+
+interface Operator {
+
+}
+
+Operator <|-- User: extends
+Operator <|-- Admin: extends
+Operator <|-- Operator: extends
+
+
+interface Building {
+}
+
+interface Floor {
+
+}
+
+interface Display {
+}
+
+interface FloorDisplay {
+}
+
+interface ElevatorBoxDisplay {
+}
+
+Display <|-- FloorDisplay: extends
+Display <|-- ElevatorBoxDisplay: extends
+
+enum Directions {
+    UP,
+    DOWN
+}
+
+'***************************************************
+'Classes
+'***************************************************
+class ShaftImpl {
+    - shaftSpeedToReachNextFloor: double
+    - elevatorBox: ElevatorBox
+}
+Shaft <|-- ShaftImpl: implements
+
+class ElevatorBoxImpl {
+    - numericButtons: Map<Integer, NumericButton>
+    - display: ElevatorBoxDisplay
+    - emergencyButtons: Map<String, EmergencyButton>
+    - nextFloor: int
+    - door: ElevatorDoor
+    - direction: Directions
+
+}
+ElevatorBox <|-- ElevatorBoxImpl: implements
+'ShaftImpl o--
+
+@enduml
