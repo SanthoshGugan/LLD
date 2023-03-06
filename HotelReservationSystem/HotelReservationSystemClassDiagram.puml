@@ -1,0 +1,157 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class User {
+    - id: UserSid
+    - name: String
+    - address: String
+    - phoneNumber: String
+    - email: String
+    - userType: UserType
+    - paymentGateways: List<PaymentMethod>
+}
+
+class Hotel {
+    - id: HotelSid
+    - floors: List<FloorSid>
+    - staffs: List<UserSid>
+}
+
+class Floor {
+    - id: FloorSid
+    - rooms: List<RoomSid>
+}
+
+class Room {
+    - id: RoomSid
+    - status: RoomStatus
+    - spec: RoomSpec
+}
+
+class RoomSpec {
+    - name: String
+    - type: RoomType
+    - price: double
+    - description: String
+}
+
+class Reservation {
+    - hotelId: HotelSid
+    - floorId: FloorSid
+    - roomId: RoomSid
+    - userId: UserSid
+    - status: ReservationStatus
+    - dateBooked: DateTime
+    - fromTimestamp: Timestamp
+    - toTimestamp: Timestamp
+    - paymentStatus: PaymentStatus
+    - paymentGateway: PaymentGateway
+}
+
+class Feedback {
+    - author: UserSid
+    - hotelId: HotelSid
+    - floorId: FloorSid
+    - roomId: RoomSid
+    - rating: Rating
+    - remark: String
+    - reviewedBy: UserSid
+    - date: DateTime
+}
+
+enum Rating {
+    POOR,
+    AVERAGE,
+    GOOD,
+    EXCELLENT
+}
+
+Hotel "*" o.. "1" User: has
+Hotel "1" *-- "*" Floor: contains
+Floor "1" *-- "*" Room: contains
+
+Reservation "*" o.. "*" Hotel: has
+Reservation "*" o.. "*" Floor: has
+Reservation "*" o.. "*" Room: has
+
+Room "*" o-- "1" RoomSpec: has
+
+Feedback "*" o.. "*" Hotel: has
+Feedback "*" o.. "*" Floor: has
+Feedback "*" o.. "*" Room: has
+Feedback "*" o.. "*" User: has
+
+abstract class Sid {
+    - id: String
+}
+
+class UserSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+class HotelSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+class FloorSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+
+class RoomSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+User "1" o-- "1" UserSid: has
+Hotel "1" o-- "1" HotelSid: has
+Floor "1" o-- "1" FloorSid: has
+Room "1" o-- "1" RoomSid: has
+
+enum PaymentGateway {
+    CREDIT_CARD,
+    PAYPAL,
+    BANK_TRANSFER
+}
+
+enum PaymentStatus {
+    INITIATED,
+    USER_INPUT,
+    USER_AUTH_FAILED,
+    USER_AUTH_SUCCESS,
+    APPROVAL_PENDING,
+    APPROVED,
+    REJECTED
+}
+
+enum UserType {
+    GUEST,
+    MAINTENANCE_STAFF,
+    ADMIN,
+    FLOOR_IN_CHARGE
+}
+
+enum USER_PERMISSION {
+    ADD_ROOM,
+    REMOVE_ROOM,
+    UPDATE_ROOM,
+    ADD_FLOOR,
+    REMOVE_ROOM,
+    ADD_GUEST,
+    ADD_MAINTENANCE,
+    ADD_FLOOR_IN_CHARGE,
+    ADD_ADMIN
+}
+
+enum RoomType {
+    BASIC,
+    STANDARD,
+    PREMIUM,
+    LUXURY
+}
+
+enum RoomStatus {
+    AVAILABLE,
+    BOOKING_IN_PROGRESS,
+    BLOCKED
+}
+@enduml
