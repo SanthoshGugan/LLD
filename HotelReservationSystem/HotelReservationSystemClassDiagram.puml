@@ -1,0 +1,317 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class User {
+    - id: UserSid
+    - name: String
+    - address: String
+    - phoneNumber: String
+    - email: String
+    - userType: UserType
+    - paymentGateways: List<PaymentMethod>
+}
+
+class Hotel {
+    - id: HotelSid
+    - rooms: List<Room>
+    - staffs: List<UserSid>
+}
+
+class Room {
+    - id: RoomSid
+    - floorNo: int
+    - status: RoomStatus
+    - spec: RoomSpec
+}
+
+class RoomSpec {
+    - name: String
+    - type: RoomType
+    - price: double
+    - description: String
+}
+
+class Reservation {
+    - id: ReservationSid
+    - roomId: RoomSid
+    - userId: UserSid
+    - status: ReservationStatus
+    - dateBooked: DateTime
+    - fromTimestamp: Timestamp
+    - toTimestamp: Timestamp
+    - paymentStatus: PaymentStatus
+    - paymentGateway: PaymentGateway
+}
+
+class Feedback {
+    - id: FeedbackSid
+    - author: UserSid
+    - hotelId: HotelSid
+    - roomId: RoomSid
+    - rating: Rating
+    - remark: String
+    - reviewedBy: UserSid
+    - date: DateTime
+}
+
+class Payment {
+    - username: String
+    - paymentDetails: String
+    - amount: double
+}
+
+enum Rating {
+    POOR,
+    AVERAGE,
+    GOOD,
+    EXCELLENT
+}
+
+Hotel "*" o.. "1" User: has
+Hotel "1" *-- "*" Room: contains
+
+Reservation "*" o.. "*" Hotel: has
+Reservation "*" o.. "*" Room: has
+
+Room "*" o-- "1" RoomSpec: has
+
+Feedback "*" o.. "*" Hotel: has
+Feedback "*" o.. "*" Room: has
+Feedback "*" o.. "*" User: has
+
+abstract class Sid {
+    - id: String
+}
+
+class UserSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+class HotelSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+class RoomSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+class ReservationSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+class FeedbackSid extends Sid {
+    + PREFIX: String { static final }
+}
+
+User "1" o-- "1" UserSid: has
+Hotel "1" o-- "1" HotelSid: has
+Room "1" o-- "1" RoomSid: has
+
+enum PaymentGateway {
+    CREDIT_CARD,
+    PAYPAL,
+    BANK_TRANSFER
+}
+
+enum PaymentStatus {
+    INITIATED,
+    USER_INPUT,
+    USER_AUTH_FAILED,
+    USER_AUTH_SUCCESS,
+    APPROVAL_PENDING,
+    APPROVED,
+    REJECTED
+}
+
+enum UserType {
+    GUEST,
+    MAINTENANCE_STAFF,
+    ADMIN,
+    FLOOR_IN_CHARGE
+}
+
+enum USER_PERMISSION {
+    ADD_ROOM,
+    REMOVE_ROOM,
+    UPDATE_ROOM,
+    REMOVE_ROOM,
+    ADD_GUEST,
+    ADD_MAINTENANCE,
+    ADD_FLOOR_IN_CHARGE,
+    ADD_ADMIN
+}
+
+enum RoomType {
+    BASIC,
+    STANDARD,
+    PREMIUM,
+    LUXURY
+}
+
+enum RoomStatus {
+    AVAILABLE,
+    BOOKING_IN_PROGRESS,
+    BLOCKED
+}
+
+/'User Dao'/
+package hotelReservationSystem.dao {
+    interface UserDao {
+        + addUser(user: User): void
+        + removeUser(userSid: UserSid): void
+        + addActiveUser(userSid: UserSid): void
+        + removeActiveUser(userSid: UserSid): void
+    }
+
+    class UserDaoImpl implements UserDao {
+        - users: Map<UserSid, User>
+        - activeUsers: Set<UserSid>
+
+        + addUser(user: User): void
+        + removeUser(userSid: userSid): void
+        + addActiveUser(userSid: UserSid): void
+        + removeActiveUser(userSid: UserSid): void
+    }
+
+    interface RoomDao {
+        addRoom(room: Room)
+        removeRoom(roomSid: RoomSid)
+    }
+
+    class RoomDaoImpl implements RoomDao {
+        - rooms: Map<RoomSid, Room>
+        - availableRooms: Set<RoomSid>
+
+        + addRoom(room: Room)
+        + removeRoom(roomSid: RoomSid)
+        + searchRoom(searchRoomQuery: SearchRoomQuery)
+    }
+
+    interface ReservationDao {
+        addReservation(userSid, roomSid): Reservation
+        cancelReservation(reservationSid: ReservationSid): void-
+    }
+
+    class ReservationDaoImpl implements ReservationDao {
+        - reservations: Map<ReservationSid, Reservation>
+
+        + addReservation(userSid: UserSid, roomSid: RoomSid): void
+        + cancelReservation(reservationSid: ReservationSid): void
+    }
+
+    interface FeedbackDao {
+        addFeedback(userSid: UserSid, rating: Rating, roomId: RoomSid ,remark: String): void
+        reviewFeedback(reviewerSid: UserSid, feedbackSid: FeedbackSid): void
+    }
+
+    class FeedbackDaoImpl implements FeedbackDao {
+        - feedbacks: List<Feedback>
+
+        + addFeedback(userSid: UserSid, rating: Rating, roomId: RoomSid ,remark: String): void
+        + reviewFeedback(reviewerSid: UserSid, feedbackSid: FeedbackSid): void
+    }
+}
+
+/' Service Implementation'/
+package hotelReservationSystem.service.userAuthentication {
+    interface UserAuthentication {
+        registerUser(user: User): void
+        loginUser(user: User): void
+        logoutUser(user: User): void
+    }
+
+    class UserAuthenticationImpl implements UserAuthentication {
+
+        + UserAuthenticationImpl(userDao: UserDao)
+
+        + registerUser(user: User): void
+        + loginUser(user: User): void
+        + logoutUser(user: User): void
+    }
+
+    UserAuthentication "1" o.. "*" User: has
+    UserAuthentication "1" o.. "1" UserDao: has
+}
+
+package hotelReservationSystem.reservationService {
+
+    interface ReservationService {
+        searchRoom(userSid: UserSid, searchRoomQuery: SearchRoomQuery): List<Room>
+        reserveRoom(userSid: UserSid, roomSid: RoomSid): boolean
+        cancelRoom(userSid: UserSid, roomSid: RoomSid): boolean
+    }
+
+    class ReservationServiceImpl implements ReservationService {
+        - paymentService: PaymentService
+        - reservationDao: ReservationDao
+        - roomDao: RoomDao
+
+        + ReservationServiceImpl(paymentService: PaymentService, reservationDao: ReservationDao)
+
+        + searchRoom(searchRoomQuery: SearchRoomQuery): List<Room>
+        + reserveRoom(userSid: UserSid, roomSid: roomSid): boolean
+        + cancelRoom(userSid: userSid, roomSid: RoomSid): boolean
+    }
+
+    interface PaymentService {
+        + addPaymentGatewayProvider(paymentGatewayProvider: PaymentGatewayProvider): void
+        + payForRoom(paymentGateway: PaymentGateway, payment: Payment): void
+    }
+
+    class PaymentServiceImpl implements PaymentService {
+        - paymentProviders: Map<PaymentGateway, PaymentGatewayProvider>
+
+        + PaymentServiceImpl()
+
+        + addPaymentGatewayProvider(paymentGatewayProvider: PaymentGatewayProvider): void
+        + payForRoom(paymentGateway: PaymentGateway, payment: Payment): void
+    }
+
+    interface PaymentGatewayProvider {
+        makePayment();
+    }
+
+    class PaymentGatewayProviderImpl implements PaymentGatewayProvider {
+        - paymentGateway: PaymentGateway
+
+        + makePayment(payment: Payment): boolean
+    }
+
+    ReservationService "1" o.. "1" ReservationDao: has
+    ReservationService "1" o.. "1" RoomDao: has
+    ReservationService "1" o.. "*" PaymentService: has
+    PaymentService "1" o.. "*" PaymentGatewayProvider: has
+    PaymentGatewayProvider "1" o.. "1" Payment: has
+}
+
+package hotelReservationSystem.service.feedbackService {
+    interface FeedbackService {
+        addFeedback(feedback: Feedback)
+        reviewFeedback(feedbackSid: FeedbackSid)
+    }
+
+    class FeedbackServiceImpl implements FeedbackService {
+        - feedbackDao: FeedbackDao
+
+        + FeedbackServiceImpl(feedbackDao: FeedbackDao)
+        + addFeedback(feedback: Feedback)
+        + reviewFeedback(feedbackSid: FeedbackSid, reviewerSid: UserSid)
+    }
+
+    FeedbackService "1" o.. "1" FeedbackDao: has
+
+}
+
+class HotelReservationSystem {
+    - userAuthentication: UserAuthentication
+    - reservationService: ReservationService
+    - feedbackService: FeedbackService
+
+    + HotelReservationSystem(userAuthentication: UserAuthentication, reservationService: ReservationService, feedbackService: FeedbackService): void
+}
+
+HotelReservationSystem "1" o.. "1" UserAuthentication
+HotelReservationSystem "1" o.. "1" ReservationService
+HotelReservationSystem "1" o.. "1" FeedbackService
+
+@enduml
