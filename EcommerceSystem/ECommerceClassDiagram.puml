@@ -1,0 +1,116 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class UserAccount {
+    - id: int
+    - name: String
+    - gender: Gender
+    - password: String
+    - email: String
+    - phone: String
+}
+
+class Product {
+    - id: int
+    - name: String
+    - description: String
+    - categoryId: int
+    - price: double
+}
+
+class CartItem {
+    - id: int
+    - productId: int
+    - quantity: int
+}
+
+class ShoppingCart {
+    - id: int
+    - userId: int
+    - items:  List<CartItem>
+    - status: ShoppingCartStatus
+}
+
+class Category {
+   - id: int
+   - name: String
+}
+
+class UserPayment {
+    - id: int
+    - userId: int
+    - paymentMode: PaymentMode
+    - username: String
+    - accountNumber: String
+    - cardNumber: String
+}
+
+class PaymentGateway {
+    - id: int
+    - paymentMode: PaymentMode
+    - gateWayMeta: String
+}
+
+class OrderItem {
+    - id: int
+    - productId: productId
+    - quantity: int
+    - amount: double
+}
+
+class Order {
+    - items: List<OrderItem>
+    - totalAmount: double
+    - userId: int
+    - orderStatus: OrderStatus
+}
+
+enum Gender {
+    MALE,
+    FEMALE,
+    OTHERS
+}
+
+enum ShoppingCartStatus {
+    SELECTION_IN_PROGRESS,
+    CHECKED_OUT,
+    ABANDONED,
+    CLOSED
+}
+
+enum PaymentMode {
+    CREDIT_CARD,
+    NET_BANKING,
+    UPI,
+    CASH_ON_DELIVERY
+}
+
+enum OrderStatus {
+    ORDER_INITIATE,
+    PAYMENT_PENDING,
+    PAYMENT_IN_PROGRESS,
+    PAYMENT_FAILED,
+    PACKING,
+    READY_FOR_DISPATCH,
+    READY_FOR_SHIPMENT,
+    SHIPMENT_PICKED,
+    DELIVERED,
+    DELIVERY_MISSED,
+    FEEDBACK_RECEIVED
+}
+
+
+UserAccount o.. UserPayment: has
+UserAccount o.. PaymentGateway
+UserAccount o.. ShoppingCart
+
+ShoppingCart o.. CartItem: contains
+CartItem o.. Product: has
+
+Order o.. OrderItem: contains
+UserAccount o.. ShoppingCart: has
+UserAccount o.. Order: has
+
+Product o.. Category: has
+
+@enduml
