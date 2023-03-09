@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/EcommerceSystem/EcommerceSystem.iml" filepath="$PROJECT_DIR$/EcommerceSystem/EcommerceSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/ElevatorSystem/ElevatorSystem.iml" filepath="$PROJECT_DIR$/ElevatorSystem/ElevatorSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/LLD.iml" filepath="$PROJECT_DIR$/.idea/LLD.iml" />
       <module fileurl="file://$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" filepath="$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" />
