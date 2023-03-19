@@ -1,116 +1,241 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class UserAccount {
-    - id: int
-    - name: String
-    - gender: Gender
-    - password: String
-    - email: String
-    - phone: String
+package com.ecommerce.models {
+    class UserAccount {
+        - id: int
+        - name: String
+        - gender: Gender
+        - password: String
+        - email: String
+        - phone: String
+    }
+
+    class Product {
+        - id: int
+        - name: String
+        - description: String
+        - categoryId: int
+        - price: double
+    }
+
+    class CartItem {
+        - id: int
+        - productId: int
+        - quantity: int
+    }
+
+    class ShoppingCart {
+        - id: int
+        - userId: int
+        - items:  List<CartItem>
+        - status: ShoppingCartStatus
+    }
+
+    class Category {
+       - id: int
+       - name: String
+    }
+
+    class UserPayment {
+        - id: int
+        - userId: int
+        - paymentMode: PaymentMode
+        - username: String
+        - accountNumber: String
+        - cardNumber: String
+    }
+
+    class PaymentGateway {
+        - id: int
+        - paymentMode: PaymentMode
+        - gateWayMeta: String
+    }
+
+    class OrderItem {
+        - id: int
+        - productId: productId
+        - quantity: int
+        - amount: double
+    }
+
+    class Order {
+        - items: List<OrderItem>
+        - totalAmount: double
+        - userId: int
+        - orderStatus: OrderStatus
+    }
+
+    enum Gender {
+        MALE,
+        FEMALE,
+        OTHERS
+    }
+
+    enum ShoppingCartStatus {
+        SELECTION_IN_PROGRESS,
+        CHECKED_OUT,
+        ABANDONED,
+        CLOSED
+    }
+
+    enum PaymentMode {
+        CREDIT_CARD,
+        NET_BANKING,
+        UPI,
+        CASH_ON_DELIVERY
+    }
+
+    enum OrderStatus {
+        ORDER_INITIATE,
+        PAYMENT_PENDING,
+        PAYMENT_IN_PROGRESS,
+        PAYMENT_FAILED,
+        PACKING,
+        READY_FOR_DISPATCH,
+        READY_FOR_SHIPMENT,
+        SHIPMENT_PICKED,
+        DELIVERED,
+        DELIVERY_MISSED,
+        FEEDBACK_RECEIVED
+    }
+
+
+    UserAccount o.. UserPayment: has
+    UserAccount o.. PaymentGateway
+    UserAccount o.. ShoppingCart
+
+    ShoppingCart o.. CartItem: contains
+    CartItem o.. Product: has
+
+    Order o.. OrderItem: contains
+    UserAccount o.. ShoppingCart: has
+    UserAccount o.. Order: has
+
+    Product o.. Category: has
 }
 
-class Product {
-    - id: int
-    - name: String
-    - description: String
-    - categoryId: int
-    - price: double
+package com.ecommerce.dao {
+
+    package com.ecommerce.dao.abstract {
+        interface Dao {
+            getConnection()
+        }
+        interface ReadDao<T, I> extends Dao{
+            + getById(id: T): I
+            + getAll(): List<I>
+        }
+
+        interface WriteDao<T, I> extends Dao {
+            + insert(entity: T): T
+            + update(id: I, entity: T): T
+            + delete(id: I): T
+        }
+    }
+
+    interface UserAccountReadDao extends ReadDao{
+
+    }
+
+    interface UserAccountWriteDao extends WriteDao {
+
+    }
+
+
+    interface UserPaymentReadDao extends ReadDao {
+
+    }
+
+    interface UserPaymentWriteDao extends WriteDao {
+
+    }
+
+    interface ShoppingCardReadDao extends ReadDao {
+
+    }
+
+    interface ShoppingCartWriteDao extends WriteDao {
+
+    }
+
+    interface PaymentGatewayReadDao extends ReadDao {
+
+    }
+
+    interface PaymentGatewayWriteDao extends WriteDao {
+
+    }
+
+    interface OrderReadDao extends ReadDao {
+
+    }
+
+    interface OrderWriteDao extends WriteDao {
+
+    }
+
+    interface OrderItemReadDao extends ReadDao {
+
+    }
+
+    interface OrderItemWriteDao extends WriteDao {
+
+    }
+
+    interface ShoppingCartReadDao extends ReadDao {
+
+    }
+
+    interface ShoppingCartWriteDao extends WriteDao {
+
+    }
+
+    interface CartItemReadDao extends ReadDao {
+
+    }
+
+    interface CartItemWriteDao extends WriteDao {
+
+    }
+
+    interface ProductReadDao extends ReadDao {
+
+    }
+
+    interface ProductWriteDao extends WriteDao {
+
+    }
+
+    interface CategoryReadDao extends ReadDao {
+
+    }
+
+    interface CategoryWriteDao extends WriteDao {
+
+    }
+
 }
 
-class CartItem {
-    - id: int
-    - productId: int
-    - quantity: int
+package com.ecommerce.dto {
+    package com.ecommerce.dto.abstract {
+        interface ReadDto<T, U, I, O> {
+            + ReadDto(dao1: ReadDao, dao2: ReadDao)
+            + getById(id: I): O
+        }
+
+        interface WriteDto<T, U, I> {
+            + WriteDto(dao1: WriteDao, dao2: WriteDao)
+            + insert(oneToOneMappedEntity Map<T, U>
+        }
+    }
+
+    interface UserAccountPaymentReadDto extends ReadDto {
+        - userAccountReadDao: UserAccountReadDao
+        - userPaymentGatewayReadDao: PaymentGatewayReadDao
+    }
+
+    UserAccountPaymentReadDto o.. UserAccountReadDao
+    UserAccountPaymentReadDto o.. PaymentGatewayReadDao
 }
-
-class ShoppingCart {
-    - id: int
-    - userId: int
-    - items:  List<CartItem>
-    - status: ShoppingCartStatus
-}
-
-class Category {
-   - id: int
-   - name: String
-}
-
-class UserPayment {
-    - id: int
-    - userId: int
-    - paymentMode: PaymentMode
-    - username: String
-    - accountNumber: String
-    - cardNumber: String
-}
-
-class PaymentGateway {
-    - id: int
-    - paymentMode: PaymentMode
-    - gateWayMeta: String
-}
-
-class OrderItem {
-    - id: int
-    - productId: productId
-    - quantity: int
-    - amount: double
-}
-
-class Order {
-    - items: List<OrderItem>
-    - totalAmount: double
-    - userId: int
-    - orderStatus: OrderStatus
-}
-
-enum Gender {
-    MALE,
-    FEMALE,
-    OTHERS
-}
-
-enum ShoppingCartStatus {
-    SELECTION_IN_PROGRESS,
-    CHECKED_OUT,
-    ABANDONED,
-    CLOSED
-}
-
-enum PaymentMode {
-    CREDIT_CARD,
-    NET_BANKING,
-    UPI,
-    CASH_ON_DELIVERY
-}
-
-enum OrderStatus {
-    ORDER_INITIATE,
-    PAYMENT_PENDING,
-    PAYMENT_IN_PROGRESS,
-    PAYMENT_FAILED,
-    PACKING,
-    READY_FOR_DISPATCH,
-    READY_FOR_SHIPMENT,
-    SHIPMENT_PICKED,
-    DELIVERED,
-    DELIVERY_MISSED,
-    FEEDBACK_RECEIVED
-}
-
-
-UserAccount o.. UserPayment: has
-UserAccount o.. PaymentGateway
-UserAccount o.. ShoppingCart
-
-ShoppingCart o.. CartItem: contains
-CartItem o.. Product: has
-
-Order o.. OrderItem: contains
-UserAccount o.. ShoppingCart: has
-UserAccount o.. Order: has
-
-Product o.. Category: has
 
 @enduml
