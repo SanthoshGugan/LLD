@@ -134,85 +134,125 @@ package com.ecommerce.dao {
     }
 
     interface UserAccountReadDao extends ReadDao{
-
+        - userAccounts: List<UserAccount>
     }
+
+    UserAccountReadDao o.. UserAccount
 
     interface UserAccountWriteDao extends WriteDao {
-
+        - userAccounts: List<UserAccount>
     }
 
+    UserAccountWriteDao o.. UserAccount
 
     interface UserPaymentReadDao extends ReadDao {
-
+        - userPaymentsByUser: Map<int, UserPayment>
     }
+
+    UserPaymentReadDao o.. UserAccount
+    UserPaymentReadDao o.. UserPayment
 
     interface UserPaymentWriteDao extends WriteDao {
-
+        - userPaymentsByUser: Map<int, UserPayment>
     }
 
-    interface ShoppingCardReadDao extends ReadDao {
-
-    }
-
-    interface ShoppingCartWriteDao extends WriteDao {
-
-    }
-
-    interface PaymentGatewayReadDao extends ReadDao {
-
-    }
-
-    interface PaymentGatewayWriteDao extends WriteDao {
-
-    }
-
-    interface OrderReadDao extends ReadDao {
-
-    }
-
-    interface OrderWriteDao extends WriteDao {
-
-    }
-
-    interface OrderItemReadDao extends ReadDao {
-
-    }
-
-    interface OrderItemWriteDao extends WriteDao {
-
-    }
+    UserPaymentReadDao o.. UserAccount
+    UserPaymentReadDao o.. UserPayment
 
     interface ShoppingCartReadDao extends ReadDao {
-
+        - shoppingCarts: List<ShoppingCart>
     }
+
+    ShoppingCartReadDao o.. ShoppingCart
+
 
     interface ShoppingCartWriteDao extends WriteDao {
-
+        - shoppingCarts: List<ShoppingCart>
     }
+
+    ShoppingCartWriteDao o.. ShoppingCart
+
+    interface PaymentGatewayReadDao extends ReadDao {
+        - paymentGateways: List<PaymentGateway>
+    }
+
+    PaymentGatewayReadDao o.. PaymentGateway
+
+    interface PaymentGatewayWriteDao extends WriteDao {
+        - paymentGateways: List<PaymentGateway>
+    }
+
+    PaymentGatewayWriteDao o.. PaymentGateway
+
+    interface OrderReadDao extends ReadDao {
+        - orders: List<Order>
+    }
+
+    OrderReadDao o.. Order
+
+    interface OrderWriteDao extends WriteDao {
+        - orders: List<Order>
+    }
+    OrderWriteDao o.. Order
+
+    interface OrderItemReadDao extends ReadDao {
+        - orderItems: List<OrderItem>
+    }
+
+    OrderItemReadDao o.. OrderItem
+
+    interface OrderItemWriteDao extends WriteDao {
+        - orderItems: List<OrderItem>
+    }
+
+    OrderItemWriteDao o.. OrderItem
+
+    interface ShoppingCartReadDao extends ReadDao {
+        - shoppingCarts: List<ShoppingCart>
+    }
+
+    ShoppingCartReadDao o.. ShoppingCart
+
+    interface ShoppingCartWriteDao extends WriteDao {
+        - shoppingCarts: List<ShoppingCart>
+    }
+
+    ShoppingCartWriteDao o.. ShoppingCart
 
     interface CartItemReadDao extends ReadDao {
-
+        - cartItems: List<CartItem>
     }
+
+    CartItemReadDao o.. CartItem
 
     interface CartItemWriteDao extends WriteDao {
-
+        - cartItems: List<CartItem>
     }
+
+    CartItemWriteDao o.. CartItem
 
     interface ProductReadDao extends ReadDao {
-
+        - products: List<Product>
     }
+
+    ProductReadDao o.. Product
 
     interface ProductWriteDao extends WriteDao {
-
+        - products: List<Product>
     }
+
+    ProductWriteDao o.. Product
 
     interface CategoryReadDao extends ReadDao {
-
+        - categories: List<Category>
     }
+
+    CategoryReadDao o.. Category
 
     interface CategoryWriteDao extends WriteDao {
-
+        - categories: List<Category>
     }
+    CategoryReadDao o.. Category
 
 }
 
@@ -236,6 +276,40 @@ package com.ecommerce.dto {
 
     UserAccountPaymentReadDto o.. UserAccountReadDao
     UserAccountPaymentReadDto o.. PaymentGatewayReadDao
+
+    interface UserShoppingCartReadDto extends ReadDto {
+        - userAccountReadDao: UserAccountReadDao
+        - shoppingCartReadDao: ShoppingCartReadDao
+    }
+
+    UserShoppingCartReadDto o.. UserAccountReadDao
+    UserShoppingCartReadDto o.. ShoppingCartReadDao
+
+    interface ShoppingCartCartItemReadDto extends ReadDto {
+        - cartDao: ShoppingCartReadDao
+        - cartItemDao: CartItemReadDao
+    }
+
+    ShoppingCartCartItemReadDto o.. ShoppingCartReadDao
+    ShoppingCartCartItemReadDto o.. CartItemReadDao
+
+    interface OrderOrderItemReadDto extends ReadDto {
+        - orderDao: OrderReadDao
+        - orderItemDao: OrderItemReadDao
+    }
+
+    OrderOrderItemReadDto o.. OrderReadDao
+    OrderOrderItemReadDto o.. OrderItemReadDao
+
+
+    interface ProductCategoryReadDao extends ReadDto {
+        - productDao: ProductReadDao
+        - categoryDao: CategoryReadDao
+    }
+
+    ProductCategoryReadDao o.. ProductReadDao
+    ProductCategoryReadDao o.. CategoryReadDao
+
 }
 
 @enduml
