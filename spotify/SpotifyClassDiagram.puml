@@ -41,6 +41,11 @@ package com.spotify.db.models {
         - content: String
     }
 
+    class AlbumDB {
+        - id: int
+        - genreId: int
+    }
+
     class SongInPlaylistDB {
         - playListId: int
         - songId: int
@@ -48,6 +53,11 @@ package com.spotify.db.models {
 
     SongInPlaylistDB o-- PlaylistDB
     SongInPlaylistDB o-- SongDB
+
+    class SongInAlbumDB {
+        - albumId: int
+        - songId: int
+    }
 
     class EpisodeInShowDB {
         - episodeId: int
@@ -231,7 +241,7 @@ package com.spotify.model {
     class Recommendation {
         - preferenceType: PreferenceType
         - preferenceValue: String
-        - preferenceIds: Map<ListType, Sid>
+        - preferenceIds: Map<ListType, List<Sid>>
     }
 
     enum PreferenceType {
@@ -393,6 +403,166 @@ package com.spotify.model {
         Audio,
         Video,
         Transcript
+    }
+}
+
+package com.shopify.dao.abstract {
+    interface Dao {
+        + getConnection(): Connection
+        + setConfigs(): void
+    }
+
+    interface ReadDao<T, I> implements Dao {
+        + get(id)
+    }
+
+    interface WriteDao<T, I> implements Dao {
+        + insert(entity: T): T
+        + update(id: I, entity:T): T
+        + delete(id: I): T
+    }
+}
+
+package com.shopify.dao {
+    interface UserReadDao implements ReadDao{
+
+    }
+
+    interface UserWriteDao implements WriteDao{
+
+    }
+
+    interface AccountReadDao {
+
+    }
+
+
+    interface AccountWriteDao {
+
+    }
+
+    interface IdentityProviderReadDao {
+
+    }
+
+    interface IdentityProviderWriteDao {
+
+    }
+
+    interface TrustReadDao {
+
+    }
+
+
+    interface TrustWriteDao {
+
+    }
+
+    interface IdentityProviderAccountReadDao {
+
+    }
+
+
+    interface IdentityProviderAccountWriteDao {
+
+    }
+
+    interface UserPreferenceReadDao {
+
+    }
+
+
+    interface UserPreferenceWriteDao {
+
+    }
+
+    interface RecommendationReadDao {
+
+    }
+
+
+    interface RecommendationWriteDao {
+
+    }
+
+    interface SongReadDao {
+
+    }
+
+
+    interface SongWriteDao {
+
+    }
+
+    interface PlaylistReadDao {
+    }
+
+
+    interface PlaylistWriteDao {
+    }
+
+    interface SongInPlaylistReadDao {
+    }
+
+    interface SongInPlaylistWriteDao {
+
+    }
+
+    interface EpisodeReadDao {
+
+    }
+
+    interface EpisodeWriteDao {
+
+    }
+
+    interface ShowReadDao {
+
+    }
+
+    interface ShowWriteDao {
+
+    }
+
+    interface EpisodeInShowReadDao {
+
+    }
+
+    interface EpisodeInShowWriteDao {
+
+    }
+
+    interface AlbumReadDao {
+
+    }
+
+    interface AlbumWriteDao {
+
+    }
+
+    interface SongInAlbumReadDao {
+
+    }
+
+
+    interface SongInAlbumWriteDao {
+
+    }
+
+    interface SubscriptionReadDao {
+
+    }
+
+    interface SubscriptionWriteDao {
+
+    }
+
+    interface AccountSubscriptionReadDao {
+
+    }
+
+    interface AccountSubscriptionWriteDao {
+
     }
 }
 @enduml
