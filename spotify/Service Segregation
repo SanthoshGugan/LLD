@@ -1,0 +1,52 @@
+=> Authentication
+		=> User
+		=> Account
+		=> IdentityProvider
+		=> Trust
+		=> IdentityProviderAccount
+
+		=> DB
+			=> Same entities as DB
+
+	=> Recommendation
+		=> User
+		=> UserPreference
+		=> Recommendation
+
+		=> DB
+			=> Same entities as DB
+
+	=> Search
+		=> User
+		=> Song
+		=> Playlist
+		=> Show
+		=> Album
+
+		=> DB
+			=> SongDB, PlaylistDB, SongInPlaylistDB => Playlist
+			=> EpisodeDB, ShowDB, EpisodeInShow => Show
+			=> SongDB, AlbumDB, SongInAlbum => Album
+
+	=> Playlist
+		=> User
+		=> Playlist
+		=> Song
+		=> DB
+			=> SongDB, PlaylistDB, SongInPlaylistDB => Playlist
+
+	=> Show
+		=> User
+		=> Show
+		=> Episode
+
+		=> DB
+			=> EpisodeDB, ShowDB, EpisodeInShow => Show
+
+	=> Album
+
+		=> DB
+			=> SongDB, AlbumDB, SongInAlbum => Album
+
+	=> UserAndAccount
+		=> User, Account, Subscription, AccountSubscription
