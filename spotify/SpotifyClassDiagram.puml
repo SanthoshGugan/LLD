@@ -425,20 +425,30 @@ package com.shopify.dao.abstract {
 
 package com.shopify.dao {
     interface UserReadDao implements ReadDao{
-
+        + getUserByAccountSid(accountSid: AccountSid): User
     }
+
+    UserReadDao o.. com.spotify.model.UserSid
+    UserReadDao o.. com.spotify.model.AccountSid
+
+    UserReadDao o.. com.spotify.model.User
 
     interface UserWriteDao implements WriteDao{
 
     }
 
+    UserWriteDao o.. com.spotify.model.UserSid
+    UserWriteDao o.. com.spotify.model.User
+
     interface AccountReadDao {
+        + validateEmail(id: AccountSid, email: String): boolean
+        + validatePhone(id: AccountSid, phone: String): boolean
 
     }
 
 
     interface AccountWriteDao {
-
+        + updateSubscription(id: AccountSid, subscriptionId: SubscriptionSid);
     }
 
     interface IdentityProviderReadDao {
