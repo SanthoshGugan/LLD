@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ElevatorSystem/ElevatorSystem.iml" filepath="$PROJECT_DIR$/ElevatorSystem/ElevatorSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HotelReservationSystem/HotelReservationSystem.iml" filepath="$PROJECT_DIR$/HotelReservationSystem/HotelReservationSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/LLD.iml" filepath="$PROJECT_DIR$/.idea/LLD.iml" />
       <module fileurl="file://$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" filepath="$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/TicTacToe/TicTacToe.iml" filepath="$PROJECT_DIR$/TicTacToe/TicTacToe.iml" />
