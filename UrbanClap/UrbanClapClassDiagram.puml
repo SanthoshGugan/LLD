@@ -1,0 +1,57 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ServiceProvider {
+    - name: String
+    - fee: double
+    - id: String
+    - availablePincode: List<String>
+}
+
+
+
+class Service {
+    - id: String
+    - name: String
+}
+
+class ServiceProvided {
+    - id: String
+    - serviceProviderId: String
+    - serviceId: String
+
+}
+
+class Slot {
+    id: String
+    startTime: Time
+    endTime: Time
+    name: String
+}
+
+class ServiceProviderAvailableSlot {
+    serviceProvidedId: String
+    slotId: String
+    date: Date
+}
+
+class Customer {
+    id: String
+    name: String
+}
+
+class AppointmentRequest {
+    customerId: String
+    serviceRequested: serviceId
+    requestedSlot: slotId
+    date: Date
+}
+
+class Appointment {
+    customerId: String
+    appointmentSlot: slotId
+    appointmentDate: Date
+    serviceProvidedId: String
+}
+
+@enduml
