@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class ServiceProvider {
+class Professional {
     - name: String
     - fee: double
     - id: String
@@ -29,7 +29,7 @@ class Slot {
     name: String
 }
 
-class ServiceProviderAvailableSlot {
+class AvailableSlot {
     serviceProvidedId: String
     slotId: String
     date: Date
@@ -40,18 +40,11 @@ class Customer {
     name: String
 }
 
-class AppointmentRequest {
-    customerId: String
-    serviceRequested: serviceId
-    requestedSlot: slotId
-    date: Date
-}
 
 class Appointment {
     customerId: String
-    appointmentSlot: slotId
-    appointmentDate: Date
-    serviceProvidedId: String
+    slotId: String
+    professionalId: String
 }
 
 @enduml

@@ -3,7 +3,7 @@
 Marketplace where experts can offer their service and customer can utilize them
 
 ### Functional Requirements
-- Service providers can offer service. They provide below details
+- Service providers can off\er service. They provide below details
   - type of service
   - slots available
   - fee per slot
