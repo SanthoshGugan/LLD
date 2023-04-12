@@ -11,10 +11,12 @@ public class Appointment {
     private String professionalId;
     private LocalDate date;
 
-    public Appointment(String id, String customerId, String slotId) {
+    public Appointment(String id, String customerId, String slotId, String serviceId, LocalDate date) {
         this.id = id;
         this.customerId = customerId;
         this.slotId = slotId;
+        this.serviceId = serviceId;
+        this.date = date;
     }
 
     public String getId() {

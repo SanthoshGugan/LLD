@@ -20,9 +20,10 @@ public class SearchByTimeRangeSearchAndMatchStrategy
         return availableSlots.stream()
                 .filter(as -> as.getServiceId().equalsIgnoreCase(appointmentServiceId)
                     && as.getSlotId().equalsIgnoreCase(appointmentSlotId)
-                    && as.getDate() == appointmentDate)
+                    && as.getDate().isEqual(appointmentDate))
                 .findFirst()
-                .orElseThrow(() -> new SlotsNotAvailableException("No matching slots available for the appointment"));
+//                .orElseThrow(() -> new SlotsNotAvailableException("No matching slots available for the appointment"))
+                .orElse(null);
     }
 
 }

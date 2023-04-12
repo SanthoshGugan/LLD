@@ -8,6 +8,7 @@ import model.Appointment;
 import model.Customer;
 import model.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class CustomerService {
@@ -53,9 +54,13 @@ public class CustomerService {
     }
 
     public Appointment createAppointmentRequest(final String customerName,
-                                                final String slotId) {
+                                                final String slotId,
+                                                final String serviceId,
+                                                final LocalDate date) {
         final String id = idGenerationService.generateId("AP");
         final Customer customer = customerDao.getByName(customerName);
-        return new Appointment(id, customer.getId(), slotId);
+        final Appointment appointment = new Appointment(id, customer.getId(), slotId, serviceId, date);
+        appointmentDao.upsert(appointment, appointment.getId());
+        return appointment;
     }
 }

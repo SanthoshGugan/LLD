@@ -34,6 +34,13 @@ public class ProfessionalService {
         this.idGenerationService = idGenerationService;
     }
 
+    public Professional get(final String professionalId) {
+        return professionalDao.get(professionalId);
+    }
+    public Professional getByName(final String name) {
+        return professionalDao.getByName(name);
+    }
+
     public void upsertProfessional(final String name,
                                    final List<String> availablePinCode) {
         final Professional existingProfessional = professionalDao.getByName(name);

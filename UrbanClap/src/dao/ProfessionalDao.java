@@ -22,6 +22,6 @@ public class ProfessionalDao extends Dao<Professional, String>{
         return super.getAll().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(name))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Professional not found"));
+                .orElse(null);
     }
 }
