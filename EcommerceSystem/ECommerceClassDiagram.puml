@@ -1,0 +1,315 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package com.ecommerce.models {
+    class UserAccount {
+        - id: int
+        - name: String
+        - gender: Gender
+        - password: String
+        - email: String
+        - phone: String
+    }
+
+    class Product {
+        - id: int
+        - name: String
+        - description: String
+        - categoryId: int
+        - price: double
+    }
+
+    class CartItem {
+        - id: int
+        - productId: int
+        - quantity: int
+    }
+
+    class ShoppingCart {
+        - id: int
+        - userId: int
+        - items:  List<CartItem>
+        - status: ShoppingCartStatus
+    }
+
+    class Category {
+       - id: int
+       - name: String
+    }
+
+    class UserPayment {
+        - id: int
+        - userId: int
+        - paymentMode: PaymentMode
+        - username: String
+        - accountNumber: String
+        - cardNumber: String
+    }
+
+    class PaymentGateway {
+        - id: int
+        - paymentMode: PaymentMode
+        - gateWayMeta: String
+    }
+
+    class OrderItem {
+        - id: int
+        - productId: productId
+        - quantity: int
+        - amount: double
+    }
+
+    class Order {
+        - items: List<OrderItem>
+        - totalAmount: double
+        - userId: int
+        - orderStatus: OrderStatus
+    }
+
+    enum Gender {
+        MALE,
+        FEMALE,
+        OTHERS
+    }
+
+    enum ShoppingCartStatus {
+        SELECTION_IN_PROGRESS,
+        CHECKED_OUT,
+        ABANDONED,
+        CLOSED
+    }
+
+    enum PaymentMode {
+        CREDIT_CARD,
+        NET_BANKING,
+        UPI,
+        CASH_ON_DELIVERY
+    }
+
+    enum OrderStatus {
+        ORDER_INITIATE,
+        PAYMENT_PENDING,
+        PAYMENT_IN_PROGRESS,
+        PAYMENT_FAILED,
+        PACKING,
+        READY_FOR_DISPATCH,
+        READY_FOR_SHIPMENT,
+        SHIPMENT_PICKED,
+        DELIVERED,
+        DELIVERY_MISSED,
+        FEEDBACK_RECEIVED
+    }
+
+
+    UserAccount o.. UserPayment: has
+    UserAccount o.. PaymentGateway
+    UserAccount o.. ShoppingCart
+
+    ShoppingCart o.. CartItem: contains
+    CartItem o.. Product: has
+
+    Order o.. OrderItem: contains
+    UserAccount o.. ShoppingCart: has
+    UserAccount o.. Order: has
+
+    Product o.. Category: has
+}
+
+package com.ecommerce.dao {
+
+    package com.ecommerce.dao.abstract {
+        interface Dao {
+            getConnection()
+        }
+        interface ReadDao<T, I> extends Dao{
+            + getById(id: T): I
+            + getAll(): List<I>
+        }
+
+        interface WriteDao<T, I> extends Dao {
+            + insert(entity: T): T
+            + update(id: I, entity: T): T
+            + delete(id: I): T
+        }
+    }
+
+    interface UserAccountReadDao extends ReadDao{
+        - userAccounts: List<UserAccount>
+    }
+
+    UserAccountReadDao o.. UserAccount
+
+    interface UserAccountWriteDao extends WriteDao {
+        - userAccounts: List<UserAccount>
+    }
+
+    UserAccountWriteDao o.. UserAccount
+
+    interface UserPaymentReadDao extends ReadDao {
+        - userPaymentsByUser: Map<int, UserPayment>
+    }
+
+    UserPaymentReadDao o.. UserAccount
+    UserPaymentReadDao o.. UserPayment
+
+    interface UserPaymentWriteDao extends WriteDao {
+        - userPaymentsByUser: Map<int, UserPayment>
+    }
+
+    UserPaymentReadDao o.. UserAccount
+    UserPaymentReadDao o.. UserPayment
+
+    interface ShoppingCartReadDao extends ReadDao {
+        - shoppingCarts: List<ShoppingCart>
+    }
+
+    ShoppingCartReadDao o.. ShoppingCart
+
+
+    interface ShoppingCartWriteDao extends WriteDao {
+        - shoppingCarts: List<ShoppingCart>
+    }
+
+    ShoppingCartWriteDao o.. ShoppingCart
+
+    interface PaymentGatewayReadDao extends ReadDao {
+        - paymentGateways: List<PaymentGateway>
+    }
+
+    PaymentGatewayReadDao o.. PaymentGateway
+
+    interface PaymentGatewayWriteDao extends WriteDao {
+        - paymentGateways: List<PaymentGateway>
+    }
+
+    PaymentGatewayWriteDao o.. PaymentGateway
+
+    interface OrderReadDao extends ReadDao {
+        - orders: List<Order>
+    }
+
+    OrderReadDao o.. Order
+
+    interface OrderWriteDao extends WriteDao {
+        - orders: List<Order>
+    }
+    OrderWriteDao o.. Order
+
+    interface OrderItemReadDao extends ReadDao {
+        - orderItems: List<OrderItem>
+    }
+
+    OrderItemReadDao o.. OrderItem
+
+    interface OrderItemWriteDao extends WriteDao {
+        - orderItems: List<OrderItem>
+    }
+
+    OrderItemWriteDao o.. OrderItem
+
+    interface ShoppingCartReadDao extends ReadDao {
+        - shoppingCarts: List<ShoppingCart>
+    }
+
+    ShoppingCartReadDao o.. ShoppingCart
+
+    interface ShoppingCartWriteDao extends WriteDao {
+        - shoppingCarts: List<ShoppingCart>
+    }
+
+    ShoppingCartWriteDao o.. ShoppingCart
+
+    interface CartItemReadDao extends ReadDao {
+        - cartItems: List<CartItem>
+    }
+
+    CartItemReadDao o.. CartItem
+
+    interface CartItemWriteDao extends WriteDao {
+        - cartItems: List<CartItem>
+    }
+
+    CartItemWriteDao o.. CartItem
+
+    interface ProductReadDao extends ReadDao {
+        - products: List<Product>
+    }
+
+    ProductReadDao o.. Product
+
+    interface ProductWriteDao extends WriteDao {
+        - products: List<Product>
+    }
+
+    ProductWriteDao o.. Product
+
+    interface CategoryReadDao extends ReadDao {
+        - categories: List<Category>
+    }
+
+    CategoryReadDao o.. Category
+
+    interface CategoryWriteDao extends WriteDao {
+        - categories: List<Category>
+    }
+    CategoryReadDao o.. Category
+
+}
+
+package com.ecommerce.dto {
+    package com.ecommerce.dto.abstract {
+        interface ReadDto<T, U, I, O> {
+            + ReadDto(dao1: ReadDao, dao2: ReadDao)
+            + getById(id: I): O
+        }
+
+        interface WriteDto<T, U, I> {
+            + WriteDto(dao1: WriteDao, dao2: WriteDao)
+            + insert(oneToOneMappedEntity Map<T, U>
+        }
+    }
+
+    interface UserAccountPaymentReadDto extends ReadDto {
+        - userAccountReadDao: UserAccountReadDao
+        - userPaymentGatewayReadDao: PaymentGatewayReadDao
+    }
+
+    UserAccountPaymentReadDto o.. UserAccountReadDao
+    UserAccountPaymentReadDto o.. PaymentGatewayReadDao
+
+    interface UserShoppingCartReadDto extends ReadDto {
+        - userAccountReadDao: UserAccountReadDao
+        - shoppingCartReadDao: ShoppingCartReadDao
+    }
+
+    UserShoppingCartReadDto o.. UserAccountReadDao
+    UserShoppingCartReadDto o.. ShoppingCartReadDao
+
+    interface ShoppingCartCartItemReadDto extends ReadDto {
+        - cartDao: ShoppingCartReadDao
+        - cartItemDao: CartItemReadDao
+    }
+
+    ShoppingCartCartItemReadDto o.. ShoppingCartReadDao
+    ShoppingCartCartItemReadDto o.. CartItemReadDao
+
+    interface OrderOrderItemReadDto extends ReadDto {
+        - orderDao: OrderReadDao
+        - orderItemDao: OrderItemReadDao
+    }
+
+    OrderOrderItemReadDto o.. OrderReadDao
+    OrderOrderItemReadDto o.. OrderItemReadDao
+
+
+    interface ProductCategoryReadDao extends ReadDto {
+        - productDao: ProductReadDao
+        - categoryDao: CategoryReadDao
+    }
+
+    ProductCategoryReadDao o.. ProductReadDao
+    ProductCategoryReadDao o.. CategoryReadDao
+
+}
+
+@enduml
