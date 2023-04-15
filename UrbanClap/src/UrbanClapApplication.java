@@ -1,6 +1,5 @@
 import dao.*;
 import model.Appointment;
-import model.AvailableSlot;
 import model.Service;
 import model.Slot;
 import service.AdminService;
@@ -11,9 +10,11 @@ import service.ProfessionalService;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class UrbanClapApplication {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+
         //setup dao
         final var professionalDao = ProfessionalDao.getInstance();
         final var serviceDao = ServiceDao.getInstance();
@@ -30,6 +31,9 @@ public class UrbanClapApplication {
         final var customerService = new CustomerService(customerDao, serviceDao, appointmentDao, idGenerationService);
         final var adminService = new AdminService(slotDao, appointmentDao, customerDao,
                 availableSlot, professionalDao, serviceDao, idGenerationService);
+
+        // matching engine
+        final var matchingEngine = new MatchingEngine(adminService);
 
         // Services Available
         final Service plumbingService = adminService.addService("Plumbing");
@@ -72,14 +76,16 @@ public class UrbanClapApplication {
         // Customer
         customerService.upsertCustomer("Rajesh");
         final Appointment appointment = customerService.createAppointmentRequest("Rajesh", morning1Slot.getId(), electricianService.getId(), LocalDate.of(2023, 4, 14));
-        final Appointment appointment1 = adminService.searchAndMatchAppointment(appointment);
-        System.out.println(" Professional Selected : "+ professionalService.get(appointment1.getProfessionalId()).getName());
+        final Appointment updatedAppointment1 = matchingEngine.match(appointment);
+        System.out.println(" Professional Selected : "+ professionalService.get(updatedAppointment1.getProfessionalId()).getName());
 
         customerService.upsertCustomer("Jayesh");
         final Appointment appointment_another = customerService.createAppointmentRequest("Jayesh", afternoon2Slot.getId(), electricianService.getId(), LocalDate.of(2023, 4, 14));
-        final Appointment appointment_another2 = adminService.searchAndMatchAppointment(appointment_another);
-        System.out.println(" No professional found for the slot : "+appointment_another2.getProfessionalId());
+        final Appointment updatedAppointmentAnother = matchingEngine.match(appointment_another);
+        System.out.println(" No professional found for the slot : "+updatedAppointmentAnother.getProfessionalId());
 
 
+        // closes Engine
+        matchingEngine.exit();
     }
 }
