@@ -1,0 +1,578 @@
+ @startuml
+'https://plantuml.com/class-diagram
+
+package com.spotify.db.models {
+    class SongDB {
+        - id: int
+    }
+
+    class EpisodeDB {
+        - id: int
+    }
+
+    class PlaylistDB {
+        - id: int
+        - genreId: int
+        - createdBy: int
+        - songs: List<songId>
+    }
+
+    class PodcastDB {
+        - id: int
+        - genreId: int
+    }
+
+    class ShowDB {
+        - id: int
+        - genreId: int
+    }
+
+    class ArtistDB {
+        - id: int
+    }
+
+    class GenreDB {
+        - id: int
+    }
+
+    class LyricDB {
+        - id: int
+        - songId: int
+        - content: String
+    }
+
+    class AlbumDB {
+        - id: int
+        - genreId: int
+    }
+
+    class SongInPlaylistDB {
+        - playListId: int
+        - songId: int
+    }
+
+    SongInPlaylistDB o-- PlaylistDB
+    SongInPlaylistDB o-- SongDB
+
+    class SongInAlbumDB {
+        - albumId: int
+        - songId: int
+    }
+
+    class EpisodeInShowDB {
+        - episodeId: int
+        - showId: int
+    }
+
+    EpisodeInShowDB o-- EpisodeDB
+    EpisodeInShowDB o-- ShowDB
+
+    class EpisodeInPodcastDB {
+        - episodeId: int
+        - podcastId: int
+    }
+
+    EpisodeInPodcastDB o-- EpisodeDB
+    EpisodeInPodcastDB o-- PodcastDB
+}
+
+
+ /'Sids'/
+
+    package com.shopify.models.sid {
+
+        interface Sid {
+            + generateSid(prefix: String): Sid
+            + isValid(sid: Sid): boolean
+        }
+
+        interface AudioSid implements Sid {
+
+        }
+
+        interface SongSid implements Sid {
+        }
+
+        interface PlaylistSid implements Sid {
+        }
+
+        interface ThumbnailSid implements Sid{
+        }
+
+        interface ChunkSid implements Sid{
+        }
+
+        interface EpisodeSid implements Sid{
+        }
+
+        interface ShowSid implements Sid{
+        }
+
+        interface PodcastSid implements Sid{
+        }
+
+        interface ArtistSid implements Sid{
+        }
+
+        interface UserSid implements Sid {}
+
+        interface AccountSid implements Sid {}
+
+        interface PaymentGatewaySid implements Sid {}
+
+        interface AccountPaymentSid implements Sid {}
+
+        interface IdentityProviderSid implements Sid {}
+
+        interface TrustSid implements Sid {}
+
+        interface IdentityProviderAccountSid implements Sid {}
+
+        interface UserPreferenceSid implements Sid {}
+
+        interface GenreSid implements Sid {}
+
+        interface LyricSid implements Sid {}
+
+        interface SubscriptionSid implements Sid {}
+
+        interface AccountSubscriptionSid implements Sid {}
+    }
+
+package com.spotify.model {
+
+    class User {
+        - name: String
+        - email: String
+        - id: UserSid
+        - accountId: AccountSid
+    }
+    User o.. UserSid
+    User o.. AccountSid
+
+    class UserPreference {
+        - id: UserPreferenceSid
+        - userId: UserSid
+        - preferenceType: PreferenceType
+        - preferenceId: Sid
+    }
+
+    UserPreference o.. UserPreferenceSid
+    UserPreference o.. UserSid
+
+    class Account {
+        - id: AccountSid
+        - activeIdentityProvider: IdentityProviderSid
+        - paymentId: AccountPaymentSid
+        - subscriptionId: AccountSubscriptionSid
+        - email: String
+        - phone: String
+    }
+
+    Account o.. AccountSid
+    Account o.. PaymentGatewaySid
+    Account o.. IdentityProviderSid
+    Account o.. AccountSubscriptionSid
+
+    class Subscription {
+        - id: SubscriptionSid
+        - name : String
+        - activeDuration: Timeframe
+        - fee: double
+    }
+
+    Subscription o.. SubscriptionSid
+
+    class AccountSubscription {
+        - id : AccountSubscriptionSid
+        - subscriptionId: SubscriptionSid
+        - startDateTime: DateTime
+        - endDateTime: DateTime
+    }
+
+    AccountSubscription o.. SubscriptionSid
+    AccountSubscription o-- AccountSubscriptionSid
+
+    class PaymentGateway {
+        - id: PaymentGatewaySid
+        - paymentUrl: String
+        - paymentType: PaymentType
+    }
+
+    PaymentGateway o.. PaymentGatewaySid
+
+    class AccountPayment {
+        - id: AccountPaymentSid
+        - paymentType: PaymentType
+    }
+
+    AccountPayment o.. AccountPaymentSid
+
+    class IdentityProvider {
+        - id: IdentityProviderSid
+        - trustId: TrustSid
+        - loginUrl: String
+        - logoutUrl: String
+    }
+
+    IdentityProvider o.. IdentityProviderSid
+    IdentityProvider o.. TrustSid
+
+    class Trust {
+        - id: TrustSid
+        - trustType: TrustType
+        - content: String
+    }
+
+    Trust o.. TrustSid
+
+    class IdentityProviderAccount {
+        - id: IdentityProviderAccountSid
+        - accountId: AccountSid
+        - assertion: String
+    }
+
+    IdentityProviderAccount o.. IdentityProviderAccountSid
+    IdentityProviderAccount o.. AccountSid
+
+    IdentityProviderAccount o.. IdentityProviderAccountSid
+    IdentityProviderAccount o.. AccountSid
+
+    class Recommendation {
+        - preferenceType: PreferenceType
+        - preferenceValue: String
+        - preferenceIds: Map<ListType, List<Sid>>
+    }
+
+    enum PreferenceType {
+        GENRE,
+        ARTIST,
+        LANGUAGE,
+    }
+
+    enum ListType {
+        Playlist,
+        Podcast,
+        Show
+    }
+
+    enum TrustType {
+        CERTIFICATE,
+        SECRET,
+        MFA,
+        SAML_METADATA
+    }
+
+    interface Media {
+        + getMediaType(): MediaType
+    }
+
+    interface Chunk {
+        + getSid(): ChunkSid
+        + getContent(): void
+    }
+
+    Chunk o.. ChunkSid
+
+    class AudioChunk implements Chunk {
+        - chunkUrl: String
+        - nextChunk: ChunkSid
+    }
+
+
+    class Audio implements Media {
+        - id: AudioSid
+        - chunk: AudioChunk
+    }
+    Audio o.. AudioChunk
+    Audio o-- AudioSid
+
+
+    /'Think on the Streaming chunks for SOng Audio'/
+    class Song {
+        - id: SongSid
+        - audioSid: AudioSid
+        - meta: SongMeta
+        - genreId: GenreSid
+        - lyricId: LyricSid
+    }
+
+    Song o-- SongSid
+    Song o-- GenreSid
+
+    class Lyric {
+        - id: LyricSid
+        - content: String
+    }
+
+    class SongMeta {
+        + getTitle(): String
+        + duration: Time
+        + thumbNail: ThumbnailSid
+        - artists: List<ArtistSid>
+
+    }
+
+    SongMeta o.. ThumbnailSid
+    SongMeta o.. ArtistSid
+    Song o-- SongMeta
+
+    class ThumbNail {
+        - id: ThumbnailSid
+        - cloudLink: String
+    }
+
+    Song o.. SongMeta
+    Song o.. Audio
+
+    class Playlist {
+        - id: PlaylistSid
+        - songs: List<Map<SongSid, SongMeta>>
+        - artists: List<ArtistSid>
+        - genreId: GenreSid
+    }
+    Playlist o-- PlaylistSid
+    Playlist o.. SongSid
+    Playlist o.. SongMeta
+    Playlist o.. ArtistSid
+    Playlist o.. GenreSid
+
+    class Album {
+        - id: AlbumSid
+        - songs: List<Map<SongSid, SongMeta>>
+    }
+
+    /'Podcast'/
+
+    class Episode {
+        - id: EpisodeSid
+        - audioSid: AudioSid
+        - episodeMeta: EpisodeMeta
+        - genreId: GenreSid
+    }
+
+    Episode o-- EpisodeSid
+    Episode o.. EpisodeMeta
+    Episode o.. GenreSid
+
+    class EpisodeMeta {
+        - title: String
+        - duration: Time
+        - artists: List<ArtistSid>
+    }
+
+    EpisodeMeta o.. ArtistSid
+
+    class Podcast {
+        - id: PodcastSid
+        - episodes: List<EpisodeSid>
+        - artists: List<ArtistSid>
+        - genreId: GenreSid
+    }
+    Podcast o.. EpisodeSid
+    Podcast o.. ArtistSid
+    Podcast o.. GenreSid
+
+    class Show {
+        - id: ShowSid
+        - episodes: List<EpisodeSid>
+        - artists: List<ArtistSid>
+        - genreId: GenreSid
+    }
+
+    Show o.. EpisodeSid
+    Show o.. GenreSid
+
+    class Artist {
+        - id: ArtistSid
+        - name: String
+    }
+
+    Artist o-- ArtistSid
+
+    class Genre {
+        - id: GenreSid
+        - name: String
+        - description: String
+        - thumbnailId: ThumbnailSid
+    }
+
+
+    /'Enums'/
+    enum MediaType {
+        Audio,
+        Video,
+        Transcript
+    }
+}
+
+package com.shopify.dao.abstract {
+    interface Dao {
+        + getConnection(): Connection
+        + setConfigs(): void
+    }
+
+    interface ReadDao<T, I> implements Dao {
+        + get(id)
+    }
+
+    interface WriteDao<T, I> implements Dao {
+        + insert(entity: T): T
+        + update(id: I, entity:T): T
+        + delete(id: I): T
+    }
+}
+
+package com.shopify.dao {
+    interface UserReadDao implements ReadDao{
+        + getUserByAccountSid(accountSid: AccountSid): User
+    }
+
+    UserReadDao o.. com.spotify.model.UserSid
+    UserReadDao o.. com.spotify.model.AccountSid
+
+    UserReadDao o.. com.spotify.model.User
+
+    interface UserWriteDao implements WriteDao{
+
+    }
+
+    UserWriteDao o.. com.spotify.model.UserSid
+    UserWriteDao o.. com.spotify.model.User
+
+    interface AccountReadDao {
+        + validateEmail(id: AccountSid, email: String): boolean
+        + validatePhone(id: AccountSid, phone: String): boolean
+
+    }
+
+
+    interface AccountWriteDao {
+        + updateSubscription(id: AccountSid, subscriptionId: SubscriptionSid);
+    }
+
+    interface IdentityProviderReadDao {
+
+    }
+
+    interface IdentityProviderWriteDao {
+
+    }
+
+    interface TrustReadDao {
+
+    }
+
+
+    interface TrustWriteDao {
+
+    }
+
+    interface IdentityProviderAccountReadDao {
+
+    }
+
+
+    interface IdentityProviderAccountWriteDao {
+
+    }
+
+    interface UserPreferenceReadDao {
+
+    }
+
+
+    interface UserPreferenceWriteDao {
+
+    }
+
+    interface RecommendationReadDao {
+
+    }
+
+
+    interface RecommendationWriteDao {
+
+    }
+
+    interface SongReadDao {
+
+    }
+
+
+    interface SongWriteDao {
+
+    }
+
+    interface PlaylistReadDao {
+    }
+
+
+    interface PlaylistWriteDao {
+    }
+
+    interface SongInPlaylistReadDao {
+    }
+
+    interface SongInPlaylistWriteDao {
+
+    }
+
+    interface EpisodeReadDao {
+
+    }
+
+    interface EpisodeWriteDao {
+
+    }
+
+    interface ShowReadDao {
+
+    }
+
+    interface ShowWriteDao {
+
+    }
+
+    interface EpisodeInShowReadDao {
+
+    }
+
+    interface EpisodeInShowWriteDao {
+
+    }
+
+    interface AlbumReadDao {
+
+    }
+
+    interface AlbumWriteDao {
+
+    }
+
+    interface SongInAlbumReadDao {
+
+    }
+
+
+    interface SongInAlbumWriteDao {
+
+    }
+
+    interface SubscriptionReadDao {
+
+    }
+
+    interface SubscriptionWriteDao {
+
+    }
+
+    interface AccountSubscriptionReadDao {
+
+    }
+
+    interface AccountSubscriptionWriteDao {
+
+    }
+}
+@enduml
