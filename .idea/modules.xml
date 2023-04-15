@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" filepath="$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/TicTacToe/TicTacToe.iml" filepath="$PROJECT_DIR$/TicTacToe/TicTacToe.iml" />
       <module fileurl="file://$PROJECT_DIR$/UrbanClap/UrbanClap.iml" filepath="$PROJECT_DIR$/UrbanClap/UrbanClap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spotify/spotify.iml" filepath="$PROJECT_DIR$/spotify/spotify.iml" />
     </modules>
   </component>
 </project>
