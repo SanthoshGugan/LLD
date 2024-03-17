@@ -1,0 +1,62 @@
+@startuml
+
+package models {
+    interface Id {
+
+    }
+
+    interface Token {
+
+    }
+
+    interface ServiceInfo {
+    }
+
+    interface Request {
+        Id id;
+        Token token;
+        ServiceInfo serviceInfo;
+    }
+
+    Request o-- Id
+    Request o-- Token
+    Request o-- ServiceInfo
+
+    interface RateLimitDecision {
+        boolean isAllowed
+    }
+
+    interface ResponseMetadata {
+    }
+
+    interface Response {
+        RateLimitDecision rateLimitDecision
+        ResponseMetadata responseMetadata
+    }
+
+    Response o-- RateLimitDecision
+    Response o-- ResponseMetadata
+}
+
+package patterns {
+    interface RLStrategyEntry {
+    }
+
+    interface RLStrategyResponse {
+        boolean isAllowed
+    }
+
+    interface RLStrategy {
+        RLStrategyResponse rateLimit(RLStrategyEntry rLStrategyEntry)
+    }
+
+    RLStrategy o-- RLStrategyEntry
+    RLStrategy o-- RLStrategyResponse
+
+    interface RLStrategyAbstractFactory {
+        RLStrategy create()
+    }
+
+    RLStrategyAbstractFactory -- RLStrategy
+}
+@enduml
