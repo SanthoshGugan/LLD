@@ -1,0 +1,21 @@
+@startuml
+
+package models{
+    interface Request {
+        int id;
+    }
+
+    interface Response {
+        boolean isAllowed;
+    }
+
+    interface LimitingStrategy {
+        Response isItAllowed(Request request);
+    }
+
+    LimitingStrategy o-- Request
+    LimitingStrategy o-- Response
+
+
+}
+@enduml

@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Pin {
+    - color: Color
+    - status: PinStatus
+}
+
+class PinFormation {
+    - formation: List<List<Pin>>
+}
+
+class Ball {
+    - name: String
+    - type: BallType
+    - weight: double
+}
+
+class BallDispatcher {
+    - balls: List<Ball>
+}
+class Alley {
+    - pinFormation: PinFormation
+    - ballDispatcher: BallDispatcher
+}
+
+class Game {
+    - alley: Alley
+    - players: List<Player>
+    - score: Map<String, double>
+    - display: GameDisplay
+}
+
+class Player {
+    - name: String
+}
+
+enum Color {
+    WHITE,
+    RED,
+    BLUE,
+    YELLOW
+}
+
+enum PATTERN {
+    STAR,
+    WATER,
+    OCEAN,
+    SKY
+}
+
+enum PinStatus {
+    STANDING,
+    FALLEN,
+    OUT_OF_ALLEY
+    OUT_OF_USAGE
+}
+@enduml

@@ -1,0 +1,6 @@
+Features of Bowling Alley
+1. Two Players will be added to Bowling game. Each player takes chances alternatively. Each player will have 2 throws on each chance.
+2. No of Pins fallen is their score.
+3. If they strike(all fallen) on first throw, they are given another fresh formation(only once) which in turn will have 2 throws. Hence in this case there will be three throws for a chance.
+4. Each player will be provided 10 chances in each game. Score will be cumulative of all chances.
+5. Player with highest score wins
