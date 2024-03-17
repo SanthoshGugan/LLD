@@ -2,14 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/BowlingAlley/BowlingAlley.iml" filepath="$PROJECT_DIR$/BowlingAlley/BowlingAlley.iml" />
       <module fileurl="file://$PROJECT_DIR$/EcommerceSystem/EcommerceSystem.iml" filepath="$PROJECT_DIR$/EcommerceSystem/EcommerceSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/ElevatorSystem/ElevatorSystem.iml" filepath="$PROJECT_DIR$/ElevatorSystem/ElevatorSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/HotelReservationSystem/HotelReservationSystem.iml" filepath="$PROJECT_DIR$/HotelReservationSystem/HotelReservationSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/LLD.iml" filepath="$PROJECT_DIR$/.idea/LLD.iml" />
       <module fileurl="file://$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" filepath="$PROJECT_DIR$/OnlineBookReadingSystem/OnlineBookReadingSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/TicTacToe/TicTacToe.iml" filepath="$PROJECT_DIR$/TicTacToe/TicTacToe.iml" />
-      <module fileurl="file://$PROJECT_DIR$/UrbanClap/UrbanClap.iml" filepath="$PROJECT_DIR$/UrbanClap/UrbanClap.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spotify/spotify.iml" filepath="$PROJECT_DIR$/spotify/spotify.iml" />
       <module fileurl="file://$PROJECT_DIR$/UrbanClap/UrbanClap.iml" filepath="$PROJECT_DIR$/UrbanClap/UrbanClap.iml" />
       <module fileurl="file://$PROJECT_DIR$/spotify/spotify.iml" filepath="$PROJECT_DIR$/spotify/spotify.iml" />
     </modules>
